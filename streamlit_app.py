@@ -179,7 +179,7 @@ def on_submit_button():
     st.session_state.submitted = True
 
 st.divider()
-ccc1, ccc2 = st.columns([1,1])
+ccc1, ccc2 = st.columns([1,1], vertical_alignment="bottom")
 with ccc1:
     st.text_input("Name:")
 with ccc2:
