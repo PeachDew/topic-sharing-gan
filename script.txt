@@ -1,0 +1,10 @@
+before we start our presentation,
+
+we thought, what better way to share about gan
+
+than to bring you all INTO the gan
+
+so head to this link or scan the qr code, 
+
+where YOL will play the role of the discriminator
+and train your very own generator
