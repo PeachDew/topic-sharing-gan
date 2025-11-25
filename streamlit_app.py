@@ -17,6 +17,7 @@ from src.gan import (
 )
 from src.app_utils import get_guess_loss
 
+st.set_page_config(page_title="GAN", page_icon=":woozy:", layout=None, initial_sidebar_state=None, menu_items=None)
 st.title("You are in the GAN")
 
 if "mnist_data" not in st.session_state:
@@ -169,7 +170,8 @@ with c1:
     st.image(st.session_state.current_image['image'])
 
 with c2:
-    st.slider("How realistic is this image?", 0.0, 100.0, 50.0, step=0.1, format="%.1f%%", key="slider_value")
+    st.text("This image shows a number '5'.")
+    st.slider("How sure are you?", 0.0, 100.0, 50.0, step=0.1, format="%.1f%%", key="slider_value")
     cc1,cc2 = st.columns([1,2], vertical_alignment="bottom")
     with cc1:
         st.number_input("ML Steps", min_value=0, value=50, key="num_ml_steps")
