@@ -15,6 +15,9 @@ from src.gan import (
     train_gan_step,
     get_real_image_batch
 )
+from pymongo import MongoClient
+
+client = MongoClient(st.secrets.uri)
 
 st.set_page_config(page_title="GAN", page_icon=":woozy:", layout=None, initial_sidebar_state=None, menu_items=None)
 st.title("You are in the GAN")
