@@ -177,12 +177,7 @@ def on_submit_button():
     st.session_state.submitted = True
 
 st.divider()
-st.warning("You can only submit once!")
-ccc1, ccc2 = st.columns([1,3])
-with ccc1:
-    st.text_input("Name:")
-with ccc2:
-    if "submitted" not in st.session_state:
-        st.session_state.submitted = False
-    st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
 
+st.text_input("Name")
+st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
+st.info("You can only submit once!")
