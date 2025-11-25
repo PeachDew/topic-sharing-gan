@@ -15,7 +15,6 @@ from src.gan import (
     train_gan_step,
     get_real_image_batch
 )
-from src.app_utils import get_guess_loss
 
 st.set_page_config(page_title="GAN", page_icon=":woozy:", layout=None, initial_sidebar_state=None, menu_items=None)
 st.title("You are in the GAN")
@@ -36,14 +35,8 @@ if "mnist_data" not in st.session_state:
     indices = [i for i, label in enumerate(mnist_data.targets) if label == 5]
     st.session_state.mnist_data = torch.utils.data.Subset(mnist_data, indices)
 
-INIT_POINTS = 0
 WARMUP_STEPS = 0
 CORRECT_IMAGES_PROB = 0.0
-
-if "points" not in st.session_state:
-    st.session_state.points = INIT_POINTS
-
-st.badge(f"{int(st.session_state.points)}", width="stretch", icon=":material/star_shine:")
 
 if "generator" not in st.session_state:
     st.session_state.generator = Generator()
@@ -66,6 +59,8 @@ if "training_steps" not in st.session_state:
     st.session_state.training_steps = 0
 if "last_losses" not in st.session_state:
     st.session_state.last_losses = {"d_loss": 0, "g_loss": 0}
+
+st.badge(f"{int(st.session_state.training_steps)} Training Steps", width="stretch", icon=":material/star_shine:")
 
 def train_with_ml_discriminator(num_steps=199):
     """
@@ -110,14 +105,11 @@ if st.session_state.training_steps == 0 and "current_image" not in st.session_st
 def next_image():
     """Generate and show next image, calculate points for previous guess"""
     is_fake = st.session_state.current_image["fake"]
-    loss = get_guess_loss(guess=st.session_state.slider_value, fake=is_fake)
-    if is_fake:
-        st.toast("Fake!",icon="🤭")
-    else:
-        st.toast("realsies")
+    # if is_fake:
+    #     st.toast("Fake!",icon="🤭")
+    # else:
+    #     st.toast("realsies")
 
-    st.session_state.points += loss 
-    print(f"Guess: {st.session_state.slider_value}, Fake: {st.session_state.current_image['fake']}, Loss: {loss}")
 
     human_score = st.session_state.slider_value / 100.0
     if is_fake == 1 and st.session_state.current_latent is not None:
