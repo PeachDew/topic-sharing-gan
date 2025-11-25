@@ -62,6 +62,8 @@ if "training_steps" not in st.session_state:
     st.session_state.training_steps = 0
 if "last_losses" not in st.session_state:
     st.session_state.last_losses = {"d_loss": 0, "g_loss": 0}
+if "submitted" not in st.session_state:
+    st.session_state.submitted = False
 
 st.badge(f"{int(st.session_state.training_steps)} Training Steps", width="stretch", icon=":material/star_shine:")
 
@@ -177,7 +179,9 @@ def on_submit_button():
     st.session_state.submitted = True
 
 st.divider()
-
-st.text_input("Name")
-st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
+ccc1, ccc2 = st.columns([1,1])
+with ccc1:
+    st.text_input("Name:")
+with ccc2:
+    st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
 st.info("You can only submit once!")
