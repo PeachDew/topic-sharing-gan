@@ -171,7 +171,7 @@ with c1:
 
 with c2:
     st.text("This image shows a number '5'.")
-    st.slider("How sure are you?", 0.0, 100.0, 50.0, step=0.1, format="%.1f%%", key="slider_value")
+    st.slider("How convinced are you?", 0.0, 100.0, 50.0, step=0.1, format="%.1f%%", key="slider_value")
     cc1,cc2 = st.columns([1,2], vertical_alignment="bottom")
     with cc1:
         st.number_input("ML Steps", min_value=0, value=50, key="num_ml_steps")
