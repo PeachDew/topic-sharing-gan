@@ -172,5 +172,17 @@ with c2:
         st.number_input("ML Steps", min_value=0, value=50, key="num_ml_steps")
     with cc2:
         st.button("Train", on_click=next_image, use_container_width=True)
-    
+
+def on_submit_button():
+    st.session_state.submitted = True
+
+st.divider()
+st.warning("You can only submit once!")
+ccc1, ccc2 = st.columns([1,3])
+with ccc1:
+    st.text_input("Name:")
+with ccc2:
+    if "submitted" not in st.session_state:
+        st.session_state.submitted = False
+    st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
 
