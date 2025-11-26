@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 
 class Generator(nn.Module):
-    def __init__(self, latent_dim=100, img_size=28, channels=1):
+    def __init__(self, latent_dim=64, img_size=28, channels=1):
         super(Generator, self).__init__()
         self.img_size = img_size
         self.latent_dim = latent_dim
@@ -14,25 +14,25 @@ class Generator(nn.Module):
         self.init_size = img_size // 4  # 7 for 28x28 images
         
         # Project and reshape
-        self.fc = nn.Linear(latent_dim, 128 * self.init_size * self.init_size)
+        self.fc = nn.Linear(latent_dim, 64 * self.init_size * self.init_size)
         
         self.conv_blocks = nn.Sequential(
-            nn.BatchNorm2d(128),
+            nn.BatchNorm2d(64),
             
             # Upsample to 14x14
-            nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
-            nn.BatchNorm2d(64),
+            nn.ConvTranspose2d(64, 16, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             
             # Upsample to 28x28
-            nn.ConvTranspose2d(64, channels, kernel_size=4, stride=2, padding=1),
+            nn.ConvTranspose2d(16, channels, kernel_size=4, stride=2, padding=1),
             nn.Tanh()
         )
     
     def forward(self, z):
         # Project and reshape
         out = self.fc(z)
-        out = out.view(out.size(0), 128, self.init_size, self.init_size)
+        out = out.view(out.size(0), 64, self.init_size, self.init_size)
         # Generate image
         img = self.conv_blocks(out)
         return img
@@ -43,7 +43,6 @@ class Generator(nn.Module):
         with torch.no_grad():
             out = self.forward(z)
         return z, out
-    
 
     
 class Discriminator(nn.Module):

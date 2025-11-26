@@ -172,7 +172,7 @@ with c2:
     st.slider("How convinced are you?", 0.0, 100.0, 50.0, step=0.1, format="%.1f%%", key="slider_value")
     cc1,cc2 = st.columns([1,2], vertical_alignment="bottom")
     with cc1:
-        st.number_input("ML Steps", min_value=0, value=50, key="num_ml_steps")
+        st.number_input("ML Steps", min_value=0, max_value=111, value=50, key="num_ml_steps")
     with cc2:
         st.button("Train", on_click=next_image, use_container_width=True)
 
