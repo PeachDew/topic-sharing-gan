@@ -6,6 +6,7 @@ import sys
 import os
 import torch
 import random
+import pickle
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from src.gan import (
     Generator, 
@@ -20,9 +21,6 @@ from pymongo.server_api import ServerApi
 
 db_username = st.secrets.db_username
 db_password = st.secrets.db_password
-
-client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
-                     server_api=ServerApi('1'))
 
 st.set_page_config(page_title="GAN", page_icon=":woozy:", layout=None, initial_sidebar_state=None, menu_items=None)
 st.title("You are in the GAN")
@@ -181,20 +179,77 @@ with c2:
         st.button("Train", on_click=next_image, use_container_width=True)
 
 def on_submit_button():
+    client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
+                     server_api=ServerApi('1'))
     st.session_state.submitted = True
-    try:
-        database = client.get_database("topic_sharing_demo")
-        movies = database.get_collection("generators")
-        movies.insert_one({"name":"raymond",
-                           "generator": 23})
-    except Exception as e:
-        print(e)
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+    database = client.get_database("topic_sharing_demo")
+    collection = database.get_collection("generators")
+    if collection.find_one({"name": st.session_state.leaderboard_name}):
+            st.error(f"Name '{st.session_state.leaderboard_name}' already exists! Please choose a different name.")
+            return False
+    state_dict = st.session_state.generator.state_dict()
+    model_bytes = pickle.dumps(state_dict)
+
+    collection.insert_one({
+            "name": st.session_state.name,
+            "model_data": model_bytes,  # Store as binary
+            "training_steps": st.session_state.training_steps,
+    })
+
+    st.success(f"Generator submitted! '{st.session_state.name}'!")
+    client.close()
+
+def evaluate_all_generators(discriminator, num_samples=100):
+    client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
+                    server_api=ServerApi('1'))
+    db = client.get_database("topic_sharing_demo")
+    collection = db.get_collection("generators")
+
+    results = {
+        "Name": [],
+        "Score": [],
+        "Images": [],
+        "I_Score": []
+    }
+    for row in collection:
+        state_dict = pickle.loads(row["model_data"])
+        generator = Generator()
+        generator.load_state_dict(state_dict)
+        generator.eval()
+        
+        # Evaluate with discriminator
+        total_score = 0.0
+        fake_images = []
+        image_scores = []
+        with torch.no_grad():
+            for _ in range(num_samples):
+                # Generate image
+                z = torch.randn(1, generator.latent_dim)
+                fake_image = generator(z)
+                score = discriminator(fake_image).item()
+
+                fake_images.append(fake_images)
+                image_scores.append(score)
+                
+                total_score += score
+        avg_score = total_score / num_samples
+        results["Name"].append(row["name"])
+        results["Score"].append(avg_score)
+        results["Images"].append(fake_images)
+        results["I_Score"].append(image_scores)
+    return results
 
 st.divider()
 ccc1, ccc2 = st.columns([1,1], vertical_alignment="bottom")
 with ccc1:
-    st.text_input("Name:")
+    st.text_input("Name:", key="leaderboard_name")
 with ccc2:
-    st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
+    # st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
+    st.button("Submit Model to Leaderboards", on_click=on_submit_button)
 
 st.info("You can only submit once!")
+
+if st.button("leaderboards"):
+    st.dataframe(evaluate_all_generators(st.session_state.discriminator, 100))
