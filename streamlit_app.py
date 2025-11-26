@@ -193,7 +193,7 @@ def on_submit_button():
     model_bytes = pickle.dumps(state_dict)
 
     collection.insert_one({
-            "name": st.session_state.name,
+            "name": st.session_state.leaderboard_name,
             "model_data": model_bytes,  # Store as binary
             "training_steps": st.session_state.training_steps,
     })
