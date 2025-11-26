@@ -255,7 +255,7 @@ if st.button("leaderboards"):
             # st.text(np.array(row["Images"][0]).shape)
             with st.expander(f"{row["Name"]}, Score: {row["Score"]}"):
                 st.text("Images here")
-                one_image = row["Images"][0]
+                one_image = np.array(row["Images"][0])
                 st.image(array_to_pil(one_image))
                 #st.text(row["I_Scores"])
             #     cs = st.columns(NUM_IMAGES)
