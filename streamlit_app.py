@@ -253,7 +253,7 @@ if True:
     NUM_IMAGES = 5
     with st.spinner():
         results = evaluate_all_generators(st.session_state.discriminator, 100)
-        results_df = pd.DataFrame(results).sort_values(by="Score", ascending=True)
+        results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
         for i, row in results_df.iterrows():
             disp_name = row["Name"]
             if i == 0:
