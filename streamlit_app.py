@@ -246,8 +246,8 @@ with ccc2:
 
 st.info("You can only submit once!")
 
-if False:
-# if True:
+# if False:
+if True:
     st.divider()
     st.header("Leaderboards 🌟")
     NUM_IMAGES = 5
