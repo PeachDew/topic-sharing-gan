@@ -246,7 +246,7 @@ with ccc2:
     st.button("Submit to Leaderboards", on_click=on_submit_button)
 
 st.info("You can only submit once!")
-NUM_IMAGES = 10
+NUM_IMAGES = 5
 if st.button("leaderboards"):
     with st.spinner():
         results = evaluate_all_generators(st.session_state.discriminator, 100)
@@ -255,5 +255,6 @@ if st.button("leaderboards"):
             with st.expander(f"{row["Name"]}, Score: {row["Score"]}"):
                 cs = st.columns(NUM_IMAGES)
                 for j, c in enumerate(cs):
-                    st.image(array_to_pil(row["Images"][j]))
-                    st.text(row["I_Scores"][j])
+                    with c:
+                        st.image(array_to_pil(row["Images"][j]))
+                        st.text(row["I_Scores"][j])
