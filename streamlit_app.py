@@ -257,4 +257,4 @@ if st.button("leaderboards"):
                 for j, c in enumerate(cs):
                     with c:
                         st.image(array_to_pil(row["Images"][j],scale=3))
-                        st.text(f"{row["I_Scores"][j]*100:.1d}")
+                        st.text(f"{row["I_Scores"][j]*100:.1f}")
