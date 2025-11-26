@@ -260,7 +260,7 @@ if True:
             if not crowned:
                 disp_name += " 👑"
                 crowned = True
-            with st.expander(f"[{row["Score"]:.1f}]{disp_name}"):
+            with st.expander(f"[{row["Score"]:.1f}]  {disp_name}"):
                 cs = st.columns(NUM_IMAGES)
                 for j, c in enumerate(cs):
                     with c:
