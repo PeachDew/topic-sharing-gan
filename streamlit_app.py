@@ -1,6 +1,7 @@
 import streamlit as st
 from torchvision import datasets, transforms
 from torch import optim
+import pandas as pd
 
 import sys
 import os
@@ -182,8 +183,6 @@ def on_submit_button():
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
                      server_api=ServerApi('1'))
     st.session_state.submitted = True
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
     database = client.get_database("topic_sharing_demo")
     collection = database.get_collection("generators")
     if collection.find_one({"name": st.session_state.leaderboard_name}):
@@ -211,7 +210,7 @@ def evaluate_all_generators(discriminator, num_samples=100):
         "Name": [],
         "Score": [],
         "Images": [],
-        "I_Score": []
+        "I_Scores": []
     }
     for row in collection.find():
         state_dict = pickle.loads(row["model_data"])
@@ -238,7 +237,7 @@ def evaluate_all_generators(discriminator, num_samples=100):
         results["Name"].append(row["name"])
         results["Score"].append(avg_score)
         results["Images"].append(fake_images)
-        results["I_Score"].append(image_scores)
+        results["I_Scores"].append(image_scores)
     return results
 
 st.divider()
@@ -250,11 +249,17 @@ with ccc2:
     st.button("Submit to Leaderboards", on_click=on_submit_button)
 
 st.info("You can only submit once!")
-
+NUM_IMAGES = 10
 if st.button("leaderboards"):
     with st.spinner():
         results = evaluate_all_generators(st.session_state.discriminator, 100)
-        st.dataframe({
-            "Name": results["Name"],
-            "Score": results["Score"]
-        })
+        results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
+        for i, row in results_df.iterrows():
+            with st.expander(row["Name"]):
+                cs = st.columns(NUM_IMAGES)
+                for j, c in enumerate(cs):
+                    with c:
+                        st.image(row["Images"][j])
+                        
+
+
