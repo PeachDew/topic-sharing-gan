@@ -258,7 +258,7 @@ if True:
             disp_name = row["Name"]
             if i == 0:
                 disp_name += "👑"
-            with st.expander(f"{disp_name}, Score: {row["Points"]:.2f}"):
+            with st.expander(f"{disp_name}, Points: {row["Score"]:.1f}"):
                 cs = st.columns(NUM_IMAGES, horizontal_alignment="center")
                 for j, c in enumerate(cs):
                     with c:
