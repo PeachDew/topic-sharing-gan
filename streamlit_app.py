@@ -253,4 +253,8 @@ st.info("You can only submit once!")
 
 if st.button("leaderboards"):
     with st.spinner():
-        st.dataframe(evaluate_all_generators(st.session_state.discriminator, 100))
+        results = evaluate_all_generators(st.session_state.discriminator, 100)
+        st.dataframe({
+            "Name": results["Name"],
+            "Score": results["Score"]
+        })
