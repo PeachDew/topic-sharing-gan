@@ -258,7 +258,7 @@ if True:
         for _, row in results_df.iterrows():
             disp_name = row["Name"]
             if not crowned:
-                disp_name += "👑"
+                disp_name += " 👑"
                 crowned = True
             with st.expander(f"[{row["Score"]:.1f}]{disp_name}"):
                 cs = st.columns(NUM_IMAGES)
