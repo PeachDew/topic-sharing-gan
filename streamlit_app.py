@@ -247,7 +247,10 @@ with ccc2:
 
 st.info("You can only submit once!")
 
-if False:
+# if False:
+if True:
+    st.divider()
+    st.header("Leaderboards 🌟")
     NUM_IMAGES = 5
     with st.spinner():
         results = evaluate_all_generators(st.session_state.discriminator, 100)
