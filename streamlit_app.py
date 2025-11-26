@@ -21,7 +21,7 @@ from pymongo.server_api import ServerApi
 db_username = st.secrets.db_username
 db_password = st.secrets.db_password
 
-client = MongoClient(f"mongodb+srv://{db_username}:{db_password}cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
+client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
                      server_api=ServerApi('1'))
 
 st.set_page_config(page_title="GAN", page_icon=":woozy:", layout=None, initial_sidebar_state=None, menu_items=None)
