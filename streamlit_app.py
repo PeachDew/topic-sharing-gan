@@ -15,7 +15,8 @@ from src.gan import (
     generate_image, 
     get_random_real_image,
     train_gan_step,
-    get_real_image_batch
+    get_real_image_batch,
+    array_to_pil
 )
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
@@ -259,7 +260,7 @@ if st.button("leaderboards"):
                 cs = st.columns(NUM_IMAGES)
                 for j, c in enumerate(cs):
                     with c:
-                        st.image(row["Images"][j])
+                        st.image(array_to_pil(row["Images"][j]))
                         
 
 

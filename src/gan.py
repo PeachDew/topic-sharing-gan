@@ -84,6 +84,14 @@ def generate_image(generator, latent=None, scale=10):
     pil_img = pil_img.resize((28 * scale, 28 * scale), Image.NEAREST)
     return pil_img
 
+def array_to_pil(arr, scale=1):
+    img = arr[0, 0].cpu().numpy()
+    img = ((img + 1) * 127.5).clip(0, 255).astype(np.uint8)
+    pil_img = Image.fromarray(img, mode="L")
+    pil_img = pil_img.resize((28 * scale, 28 * scale), Image.NEAREST)
+    return pil_img
+
+
 
 def get_random_real_image(mnist_data, scale=10):
     """Return a random MNIST real image as a scaled-up PIL image."""
