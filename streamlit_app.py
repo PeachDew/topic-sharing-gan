@@ -254,10 +254,12 @@ if True:
     with st.spinner():
         results = evaluate_all_generators(st.session_state.discriminator, 100)
         results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
-        for i, row in results_df.iterrows():
+        crowned = False
+        for _, row in results_df.iterrows():
             disp_name = row["Name"]
-            if i == 0:
+            if not crowned:
                 disp_name += "👑"
+                crowned = True
             with st.expander(f"{disp_name} [{row["Score"]:.1f}]"):
                 cs = st.columns(NUM_IMAGES)
                 for j, c in enumerate(cs):
