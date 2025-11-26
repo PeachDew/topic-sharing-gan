@@ -226,7 +226,7 @@ def evaluate_all_generators(discriminator, num_samples=100):
                 fake_image = generator(z)
                 score = discriminator(fake_image).item()
 
-                fake_images.append(fake_images)
+                fake_images.append(fake_image)
                 image_scores.append(score)
                 
                 total_score += score
@@ -252,17 +252,7 @@ if st.button("leaderboards"):
         results = evaluate_all_generators(st.session_state.discriminator, 100)
         results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
         for i, row in results_df.iterrows():
-            # st.text(np.array(row["Images"][0]).shape)
             with st.expander(f"{row["Name"]}, Score: {row["Score"]}"):
                 st.text("Images here")
-                one_image = np.array(row["Images"][0])
+                one_image = row["Images"][0]
                 st.image(array_to_pil(one_image))
-                #st.text(row["I_Scores"])
-            #     cs = st.columns(NUM_IMAGES)
-            #     for j, c in enumerate(cs):
-            #         with c:
-            #             pil_image = array_to_pil(row["Images"][j])
-                        # st.image(pil_image)
-                        
-
-
