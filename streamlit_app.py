@@ -198,7 +198,7 @@ def on_submit_button():
             "training_steps": st.session_state.training_steps,
     })
 
-    st.success(f"Generator submitted! '{st.session_state.name}'!")
+    st.success(f"Generator submitted! '{st.session_state.leaderboard_name}'!")
     client.close()
 
 def evaluate_all_generators(discriminator, num_samples=100):
@@ -252,4 +252,5 @@ with ccc2:
 st.info("You can only submit once!")
 
 if st.button("leaderboards"):
-    st.dataframe(evaluate_all_generators(st.session_state.discriminator, 100))
+    with st.spinner():
+        st.dataframe(evaluate_all_generators(st.session_state.discriminator, 100))
