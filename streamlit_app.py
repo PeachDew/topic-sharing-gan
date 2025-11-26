@@ -259,7 +259,7 @@ if True:
             if i == 0:
                 disp_name += "👑"
             with st.expander(f"{disp_name}, Points: {row["Score"]:.1f}"):
-                cs = st.columns(NUM_IMAGES, horizontal_alignment="center")
+                cs = st.columns(NUM_IMAGES)
                 for j, c in enumerate(cs):
                     with c:
                         st.image(array_to_pil(row["Images"][j],scale=3))
