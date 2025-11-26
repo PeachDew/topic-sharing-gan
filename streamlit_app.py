@@ -115,11 +115,6 @@ if st.session_state.training_steps == 0 and "current_image" not in st.session_st
 def next_image():
     """Generate and show next image, calculate points for previous guess"""
     is_fake = st.session_state.current_image["fake"]
-    # if is_fake:
-    #     st.toast("Fake!",icon="🤭")
-    # else:
-    #     st.toast("realsies")
-
 
     human_score = st.session_state.slider_value / 100.0
     if is_fake == 1 and st.session_state.current_latent is not None:
