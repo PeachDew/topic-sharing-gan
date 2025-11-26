@@ -213,7 +213,7 @@ def evaluate_all_generators(discriminator, num_samples=100):
         "Images": [],
         "I_Score": []
     }
-    for row in collection:
+    for row in collection.find():
         state_dict = pickle.loads(row["model_data"])
         generator = Generator()
         generator.load_state_dict(state_dict)
@@ -247,7 +247,7 @@ with ccc1:
     st.text_input("Name:", key="leaderboard_name")
 with ccc2:
     # st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
-    st.button("Submit Model to Leaderboards", on_click=on_submit_button)
+    st.button("Submit to Leaderboards", on_click=on_submit_button)
 
 st.info("You can only submit once!")
 
