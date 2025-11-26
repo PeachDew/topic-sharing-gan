@@ -246,13 +246,14 @@ with ccc2:
     st.button("Submit to Leaderboards", on_click=on_submit_button)
 
 st.info("You can only submit once!")
-NUM_IMAGES = 5
-if st.button("leaderboards"):
+
+if False:
+    NUM_IMAGES = 5
     with st.spinner():
         results = evaluate_all_generators(st.session_state.discriminator, 100)
         results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
         for i, row in results_df.iterrows():
-            with st.expander(f"{row["Name"]}, Score: {row["Score"]}"):
+            with st.expander(f"{row["Name"]}, Score: {row["Score"]:.1f}"):
                 cs = st.columns(NUM_IMAGES)
                 for j, c in enumerate(cs):
                     with c:
