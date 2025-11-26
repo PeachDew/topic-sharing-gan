@@ -252,9 +252,10 @@ if st.button("leaderboards"):
         results = evaluate_all_generators(st.session_state.discriminator, 100)
         results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
         for i, row in results_df.iterrows():
-            st.text(np.array(row["Images"][0]).shape)
-            break
-            # with st.expander(row["Name"]):
+            # st.text(np.array(row["Images"][0]).shape)
+            with st.expander(f"{row["Name"]}, Score: {row["Score"]}"):
+                st.text("Images here")
+                st.text(row["I_Scores"])
             #     cs = st.columns(NUM_IMAGES)
             #     for j, c in enumerate(cs):
             #         with c:
