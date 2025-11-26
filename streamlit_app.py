@@ -183,8 +183,10 @@ with c2:
 def on_submit_button():
     st.session_state.submitted = True
     try:
-        client.admin.command('ping')
-        print("Pinged your deployment. You successfully connected to MongoDB!")
+        database = client.get_database("topic_sharing_demo")
+        movies = database.get_collection("generators")
+        movies.insert_one({"name":"raymond",
+                           "generator": 23})
     except Exception as e:
         print(e)
 
