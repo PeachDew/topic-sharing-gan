@@ -230,9 +230,8 @@ def evaluate_all_generators(discriminator, num_samples=100):
                 image_scores.append(score)
                 
                 total_score += score
-        avg_score = total_score / num_samples
         results["Name"].append(row["name"])
-        results["Score"].append(avg_score)
+        results["Score"].append(total_score)
         results["Images"].append(fake_images)
         results["I_Scores"].append(image_scores)
     return results
@@ -254,13 +253,13 @@ if True:
     NUM_IMAGES = 5
     with st.spinner():
         results = evaluate_all_generators(st.session_state.discriminator, 100)
-        results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
+        results_df = pd.DataFrame(results).sort_values(by="Score", ascending=True)
         for i, row in results_df.iterrows():
             disp_name = row["Name"]
             if i == 0:
                 disp_name += "👑"
-            with st.expander(f"{disp_name}, Score: {row["Score"]:.1f}"):
-                cs = st.columns(NUM_IMAGES)
+            with st.expander(f"{disp_name}, Score: {row["Points"]:.2f}"):
+                cs = st.columns(NUM_IMAGES, horizontal_alignment="center")
                 for j, c in enumerate(cs):
                     with c:
                         st.image(array_to_pil(row["Images"][j],scale=3))
