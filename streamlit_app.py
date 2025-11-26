@@ -16,8 +16,13 @@ from src.gan import (
     get_real_image_batch
 )
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 
-client = MongoClient(st.secrets.uri)
+db_username = st.secrets.db_username
+db_password = st.secrets.db_password
+
+client = MongoClient(f"mongodb+srv://{db_username}:{db_password}cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
+                     server_api=ServerApi('1'))
 
 st.set_page_config(page_title="GAN", page_icon=":woozy:", layout=None, initial_sidebar_state=None, menu_items=None)
 st.title("You are in the GAN")
@@ -177,6 +182,11 @@ with c2:
 
 def on_submit_button():
     st.session_state.submitted = True
+    try:
+        client.admin.command('ping')
+        print("Pinged your deployment. You successfully connected to MongoDB!")
+    except Exception as e:
+        print(e)
 
 st.divider()
 ccc1, ccc2 = st.columns([1,1], vertical_alignment="bottom")
@@ -184,4 +194,5 @@ with ccc1:
     st.text_input("Name:")
 with ccc2:
     st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
+
 st.info("You can only submit once!")
