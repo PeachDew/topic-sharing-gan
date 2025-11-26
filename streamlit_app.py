@@ -256,7 +256,10 @@ if True:
         results = evaluate_all_generators(st.session_state.discriminator, 100)
         results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
         for i, row in results_df.iterrows():
-            with st.expander(f"{row["Name"]}, Score: {row["Score"]:.1f}"):
+            disp_name = row["Name"]
+            if i == 0:
+                disp_name += "👑"
+            with st.expander(f"{disp_name}, Score: {row["Score"]:.1f}"):
                 cs = st.columns(NUM_IMAGES)
                 for j, c in enumerate(cs):
                     with c:
