@@ -252,12 +252,12 @@ if st.button("leaderboards"):
         results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
         for i, row in results_df.iterrows():
             print(row["Images"][0])
-            with st.expander(row["Name"]):
-                cs = st.columns(NUM_IMAGES)
-                for j, c in enumerate(cs):
-                    with c:
-                        pil_image = array_to_pil(row["Images"][j])
-                        st.image(pil_image)
+            # with st.expander(row["Name"]):
+            #     cs = st.columns(NUM_IMAGES)
+            #     for j, c in enumerate(cs):
+            #         with c:
+            #             pil_image = array_to_pil(row["Images"][j])
+                        # st.image(pil_image)
                         
 
 
