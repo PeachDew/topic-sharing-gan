@@ -1,5 +1,10 @@
 import streamlit as st
 import pandas as pd
+
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from src.gan import evaluate_all_generators, array_to_pil
 
 st.set_page_config(page_title="Leaderboards", page_icon="🌟")
