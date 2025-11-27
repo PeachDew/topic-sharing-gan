@@ -5,7 +5,7 @@ import torch
 
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from src.gan import array_to_pil, Generator, Discriminator
+from src.gan import array_to_pil, Generator, Discriminator_Evaluator
 
 st.set_page_config(page_title="Leaderboards", page_icon="🌟")
 db_username = st.secrets.db_username
@@ -15,7 +15,7 @@ db_password = st.secrets.db_password
 def load_pretrained_discriminator(model_path="models/pretrained_dicriminator.pth"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    discriminator = Discriminator().to(device)
+    discriminator = Discriminator_Evaluator().to(device)
     
     checkpoint = torch.load(model_path, map_location=device)
     discriminator.load_state_dict(checkpoint['model_state_dict'])
@@ -23,9 +23,9 @@ def load_pretrained_discriminator(model_path="models/pretrained_dicriminator.pth
     
     return discriminator, device
 
-discriminator, device = load_pretrained_discriminator()
-#if "discriminator" not in st.session_state:
-st.session_state.discriminator = discriminator
+evaluator, device = load_pretrained_discriminator()
+if "discriminator" not in st.session_state:
+    st.session_state.evaluator = evaluator
 
 def evaluate_all_generators(_discriminator, num_samples=100):
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
@@ -75,7 +75,7 @@ def evaluate_all_generators(_discriminator, num_samples=100):
 st.header("Leaderboards 🌟")
 NUM_IMAGES = 5
 with st.spinner():
-    results = evaluate_all_generators(st.session_state.discriminator, 100)
+    results = evaluate_all_generators(st.session_state.evaluator, 100)
     results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
     crowned = False
     for _, row in results_df.iterrows():

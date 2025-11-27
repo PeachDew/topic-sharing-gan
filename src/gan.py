@@ -45,8 +45,29 @@ class Generator(nn.Module):
         return z, out
 
 class Discriminator(nn.Module):
-    def __init__(self, img_size=28, channels=1):
+    def __init__(self, img_size=28):
         super(Discriminator, self).__init__()
+        self.img_size = img_size
+
+        self.model = nn.Sequential(
+            nn.Linear(img_size * img_size, 512),
+            nn.LeakyReLU(0.2),
+            nn.Dropout(0.15),
+            nn.Linear(512, 256),
+            nn.LeakyReLU(0.2),
+            nn.Dropout(0.15),
+            nn.Linear(256, 1),
+            nn.Sigmoid()  # Output probability [0, 1]
+        )
+
+    def forward(self, img):
+        img_flat = img.view(img.size(0), -1)
+        validity = self.model(img_flat)
+        return validity
+
+class Discriminator_Evaluator(nn.Module):
+    def __init__(self, img_size=28, channels=1):
+        super(Discriminator_Evaluator, self).__init__()
         self.img_size = img_size
         
         # CNN feature extraction
