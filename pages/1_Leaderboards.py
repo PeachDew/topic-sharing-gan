@@ -12,7 +12,8 @@ st.set_page_config(page_title="Leaderboards", page_icon="🌟")
 db_username = st.secrets.db_username
 db_password = st.secrets.db_password
 
-def evaluate_all_generators(discriminator, num_samples=100):
+@st.cache_data(ttl=60)
+def evaluate_all_generators(_discriminator, num_samples=100):
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
                     server_api=ServerApi('1'))
     db = client.get_database("topic_sharing_demo")
@@ -30,7 +31,7 @@ def evaluate_all_generators(discriminator, num_samples=100):
         generator.load_state_dict(state_dict)
         generator.eval()
         
-        # Evaluate with discriminator
+        # Evaluate with _discriminator
         total_score = 0.0
         fake_images = []
         image_scores = []
@@ -39,7 +40,7 @@ def evaluate_all_generators(discriminator, num_samples=100):
                 # Generate image
                 z = torch.randn(1, generator.latent_dim)
                 fake_image = generator(z)
-                score = discriminator(fake_image).item()
+                score = _discriminator(fake_image).item()
 
                 fake_images.append(fake_image)
                 image_scores.append(score)
