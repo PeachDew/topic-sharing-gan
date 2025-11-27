@@ -24,7 +24,7 @@ def load_pretrained_discriminator(model_path="models/pretrained_dicriminator.pth
     return discriminator, device
 
 evaluator, device = load_pretrained_discriminator()
-if "discriminator" not in st.session_state:
+if "evaluator" not in st.session_state:
     st.session_state.evaluator = evaluator
 
 def evaluate_all_generators(_discriminator, num_samples=100):
