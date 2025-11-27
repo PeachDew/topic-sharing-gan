@@ -5,7 +5,7 @@ import torch
 
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from src.gan import array_to_pil, Generator
+from src.gan import array_to_pil, Generator, Discriminator
 
 st.set_page_config(page_title="Leaderboards", page_icon="🌟")
 db_username = st.secrets.db_username
