@@ -17,7 +17,7 @@ def load_pretrained_discriminator(model_path="models/pretrained_dicriminator.pth
     
     discriminator = Discriminator().to(device)
     
-    checkpoint = torch.load('pretrained_discriminator.pth', map_location=device)
+    checkpoint = torch.load(model_path, map_location=device)
     discriminator.load_state_dict(checkpoint['model_state_dict'])
     discriminator.eval()  # evaluation mode
     
