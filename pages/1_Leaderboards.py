@@ -27,7 +27,6 @@ discriminator, device = load_pretrained_discriminator()
 #if "discriminator" not in st.session_state:
 st.session_state.discriminator = discriminator
 
-@st.cache_data(ttl=60)
 def evaluate_all_generators(_discriminator, num_samples=100):
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
                     server_api=ServerApi('1'))
@@ -61,16 +60,15 @@ def evaluate_all_generators(_discriminator, num_samples=100):
                 image_scores.append(score)
                 
                 total_score += score
+
+        batch = list(zip(image_scores, fake_images))
+        batch.sort(key=lambda x: x[0], reverse=True)
+        sorted_scores, sorted_images = zip(*batch)
+
         results["Name"].append(row["name"])
         results["Score"].append(total_score)
-        results["Images"].append(fake_images)
-        results["I_Scores"].append(image_scores)
-
-    paired = list(zip(results["I_Scores"], results["Images"]))
-    paired.sort(key=lambda x: x[0], reverse=True)
-    results["I_Scores"], results["Images"] = zip(*paired)
-    # results["I_Scores"] = list(results["I_Scores"])
-    # results["Images"] = list(results["Images"])
+        results["Images"].append(sorted_images)
+        results["I_Scores"].append(sorted_scores)
     
     return results
 
