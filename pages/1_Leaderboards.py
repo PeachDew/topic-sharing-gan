@@ -3,7 +3,6 @@ import pandas as pd
 import pickle
 import torch
 
-
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from src.gan import array_to_pil, Generator
@@ -11,6 +10,22 @@ from src.gan import array_to_pil, Generator
 st.set_page_config(page_title="Leaderboards", page_icon="🌟")
 db_username = st.secrets.db_username
 db_password = st.secrets.db_password
+
+@st.cache_resource
+def load_pretrained_discriminator(model_path="models/pretrained_dicriminator.pth"):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    discriminator = Discriminator().to(device)
+    
+    checkpoint = torch.load('pretrained_discriminator.pth', map_location=device)
+    discriminator.load_state_dict(checkpoint['model_state_dict'])
+    discriminator.eval()  # evaluation mode
+    
+    return discriminator, device
+
+discriminator, device = load_pretrained_discriminator()
+if "discriminator" not in st.session_state:
+    st.session_state.discriminator = discriminator
 
 @st.cache_data(ttl=60)
 def evaluate_all_generators(_discriminator, num_samples=100):
