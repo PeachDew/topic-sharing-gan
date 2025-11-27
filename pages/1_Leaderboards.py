@@ -68,7 +68,7 @@ def evaluate_all_generators(_discriminator, num_samples=100):
 
     paired_image_scores = list(zip(results["Images"], results["I_Scores"]))
     paired_image_scores.sort(key=lambda x: x[1], reverse=True)
-    results["Images"], results["I_Scores"] = zip(*paired)
+    results["Images"], results["I_Scores"] = zip(*paired_image_scores)
     results["Images"] = list(results["Images"])
     results["I_Scores"] = list(results["I_Scores"])
 
