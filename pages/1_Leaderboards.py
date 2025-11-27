@@ -78,9 +78,9 @@ with st.spinner():
         if not crowned:
             disp_name += " 👑"
             crowned = True
-        with st.expander(f"[{row["Score"]:.1f}]  {disp_name}"):
+        with st.expander(f"[{row["Score"]:.7f}]  {disp_name}"):
             cs = st.columns(NUM_IMAGES)
             for j, c in enumerate(cs):
                 with c:
                     st.image(array_to_pil(row["Images"][j],scale=3))
-                    st.markdown(f"<p style='text-align: center;'>{row["I_Scores"][j]*100:.1f}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='text-align: center;'>{row["I_Scores"][j]*100:.2f}</p>", unsafe_allow_html=True)
