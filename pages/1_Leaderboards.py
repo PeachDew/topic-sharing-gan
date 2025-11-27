@@ -78,7 +78,7 @@ with st.spinner():
         if not crowned:
             disp_name += " 👑"
             crowned = True
-        with st.expander(f"[{row["Score"]*100:.7f}]  {disp_name}"):
+        with st.expander(f"[{row["Score"]*100:.5f}]  {disp_name}"):
             cs = st.columns(NUM_IMAGES)
             for j, c in enumerate(cs):
                 with c:
