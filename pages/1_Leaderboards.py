@@ -71,7 +71,7 @@ def evaluate_all_generators(_discriminator, num_samples=100):
     results["Images"], results["I_Scores"] = zip(*paired_image_scores)
     results["Images"] = list(results["Images"])
     results["I_Scores"] = list(results["I_Scores"])
-    st.text(I_Scores)
+    st.text(results["I_Scores"])
 
     return results
 
