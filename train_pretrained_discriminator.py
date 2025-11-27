@@ -39,6 +39,8 @@ def train_discriminator_on_real_data(epochs=10, batch_size=64, lr=0.0002):
     generator = Generator().to(device)  # For generating fake samples
     
     d_optimizer = optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
+    g_optimizer = optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
+
     criterion = nn.BCELoss()
     
     # Training loop
@@ -73,6 +75,14 @@ def train_discriminator_on_real_data(epochs=10, batch_size=64, lr=0.0002):
             d_loss = d_real_loss + d_fake_loss
             d_loss.backward()
             d_optimizer.step()
+
+            g_optimizer.zero_grad()
+            z = torch.randn(batch_size_actual, generator.latent_dim).to(device)
+            fake_images = generator(z)  
+            fake_validity = discriminator(fake_images)
+            g_loss = criterion(fake_validity, real_labels)  
+            g_loss.backward()
+            g_optimizer.step()
             
             epoch_d_loss += d_loss.item()
             progress_bar.set_postfix({'d_loss': d_loss.item()})
@@ -154,7 +164,7 @@ if __name__ == "__main__":
     print("=" * 60)
     
     # Train discriminator
-    discriminator = train_discriminator_on_real_data(epochs=10, batch_size=64)
+    discriminator = train_discriminator_on_real_data(epochs=42, batch_size=32)
     
     test_discriminator()
     
