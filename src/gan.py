@@ -44,26 +44,51 @@ class Generator(nn.Module):
             out = self.forward(z)
         return z, out
 
-    
 class Discriminator(nn.Module):
-    def __init__(self, img_size=28):
+    def __init__(self, img_size=28, channels=1):
         super(Discriminator, self).__init__()
         self.img_size = img_size
         
-        self.model = nn.Sequential(
-            nn.Linear(img_size * img_size, 512),
-            nn.LeakyReLU(0.2),
+        # CNN feature extraction
+        self.conv = nn.Sequential(
+            nn.Conv2d(channels, 32, 3, padding=1),  # 28x28
+            nn.ReLU(0.2),
+            nn.Conv2d(32, 64, 3, stride=2, padding=1),  # 14x14
+            nn.ReLU(0.2),
+        )
+        
+        # Self-attention
+        self.attention = nn.MultiheadAttention(
+            embed_dim=64,
+            num_heads=4,
+            batch_first=True
+        )
+        
+        # Classifier
+        self.classifier = nn.Sequential(
+            nn.Linear(64, 16),
+            nn.ReLU(0.2),
             nn.Dropout(0.15),
-            nn.Linear(512, 256),
-            nn.LeakyReLU(0.2),
-            nn.Dropout(0.15),
-            nn.Linear(256, 1),
-            nn.Sigmoid()  # Output probability [0, 1]
+            nn.Linear(16, 1),
+            nn.Sigmoid()
         )
     
     def forward(self, img):
-        img_flat = img.view(img.size(0), -1)
-        validity = self.model(img_flat)
+        # CNN features: (B, 128, 7, 7)
+        features = self.conv(img)
+        
+        # Reshape for attention: (B, 49, 128)
+        B, C, H, W = features.shape
+        features = features.view(B, C, H*W).permute(0, 2, 1)
+        
+        # Self-attention
+        attn_out, _ = self.attention(features, features, features)
+        
+        # Global average pooling: (B, 128)
+        pooled = attn_out.mean(dim=1)
+        
+        # Classification
+        validity = self.classifier(pooled)
         return validity
 
 def get_loss(pred: float): # 0 <= pred <= 1
