@@ -164,7 +164,7 @@ if __name__ == "__main__":
     print("=" * 60)
     
     # Train discriminator
-    discriminator = train_discriminator_on_real_data(epochs=42, batch_size=32)
+    discriminator = train_discriminator_on_real_data(epochs=3, batch_size=32)
     
     test_discriminator()
     
