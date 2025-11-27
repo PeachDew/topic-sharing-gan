@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-from ..src.gan import evaluate_all_generators, array_to_pil
+import os
+print(os.getcwd())
+from src.gan import evaluate_all_generators, array_to_pil
 
 st.set_page_config(page_title="Leaderboards", page_icon="🌟")
 
