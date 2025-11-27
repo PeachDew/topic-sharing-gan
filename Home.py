@@ -1,8 +1,6 @@
 import streamlit as st
 from torchvision import datasets, transforms
 from torch import optim
-import pandas as pd
-import numpy as np
 
 import sys
 import os
@@ -17,7 +15,6 @@ from src.gan import (
     get_random_real_image,
     train_gan_step,
     get_real_image_batch,
-    array_to_pil
 )
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
