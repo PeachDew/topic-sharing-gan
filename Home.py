@@ -194,44 +194,6 @@ def on_submit_button():
     st.success(f"Generator submitted! '{st.session_state.leaderboard_name}'!")
     client.close()
 
-def evaluate_all_generators(discriminator, num_samples=100):
-    client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
-                    server_api=ServerApi('1'))
-    db = client.get_database("topic_sharing_demo")
-    collection = db.get_collection("generators")
-
-    results = {
-        "Name": [],
-        "Score": [],
-        "Images": [],
-        "I_Scores": []
-    }
-    for row in collection.find():
-        state_dict = pickle.loads(row["model_data"])
-        generator = Generator()
-        generator.load_state_dict(state_dict)
-        generator.eval()
-        
-        # Evaluate with discriminator
-        total_score = 0.0
-        fake_images = []
-        image_scores = []
-        with torch.no_grad():
-            for _ in range(num_samples):
-                # Generate image
-                z = torch.randn(1, generator.latent_dim)
-                fake_image = generator(z)
-                score = discriminator(fake_image).item()
-
-                fake_images.append(fake_image)
-                image_scores.append(score)
-                
-                total_score += score
-        results["Name"].append(row["name"])
-        results["Score"].append(total_score)
-        results["Images"].append(fake_images)
-        results["I_Scores"].append(image_scores)
-    return results
 
 st.divider()
 ccc1, ccc2 = st.columns([1,1], vertical_alignment="bottom")
