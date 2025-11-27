@@ -66,13 +66,12 @@ def evaluate_all_generators(_discriminator, num_samples=100):
         results["Images"].append(fake_images)
         results["I_Scores"].append(image_scores)
 
-    paired_image_scores = list(zip(results["Images"], results["I_Scores"]))
-    paired_image_scores.sort(key=lambda x: x[1], reverse=True)
-    results["Images"], results["I_Scores"] = zip(*paired_image_scores)
-    results["Images"] = list(results["Images"])
-    results["I_Scores"] = list(results["I_Scores"])
-    st.text(results["I_Scores"])
-
+    paired = list(zip(results["I_Scores"], results["Images"]))
+    paired.sort(key=lambda x: x[0], reverse=True)
+    results["I_Scores"], results["Images"] = zip(*paired)
+    # results["I_Scores"] = list(results["I_Scores"])
+    # results["Images"] = list(results["Images"])
+    
     return results
 
 st.header("Leaderboards 🌟")
