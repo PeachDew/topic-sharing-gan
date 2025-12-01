@@ -3,5 +3,4 @@ base="dark"
 primaryColor="darkGoldrod"
 
 [server]
-fileWatcherType = "none"
-
+fileWatcherType="none"
