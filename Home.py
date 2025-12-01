@@ -161,9 +161,11 @@ with c2:
     with cc2:
         st.button("Train", on_click=next_image, use_container_width=True)
 
-st.text("Train you own generator with YOU as the discriminator!")
-st.text("Give a model a score for every image, and watch the model learn in real time.")
-st.text("After training, submit your model and it will be ranked!")
+st.markdown('''
+Train you own generator with YOU as the discriminator!
+Give a model a score for every image, and watch the model learn in real time.
+After training, submit your model and it will be ranked!
+''')
 
 def on_submit_button():
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",

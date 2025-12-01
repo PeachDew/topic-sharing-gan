@@ -78,7 +78,8 @@ with st.spinner():
     results = evaluate_all_generators(st.session_state.evaluator, 100)
     results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
     crowned = False
-    for i, row in results_df.iterrows():
+    i = 0
+    for _, row in results_df.iterrows():
         disp_name = row["Name"]
         if not crowned:
             disp_name += " 👑"
@@ -89,3 +90,4 @@ with st.spinner():
                 with c:
                     st.image(array_to_pil(row["Images"][j],scale=3))
                     st.markdown(f"<p style='text-align: center;'>{row["I_Scores"][j]*100:.2f}</p>", unsafe_allow_html=True)
+        i += 1
