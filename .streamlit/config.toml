@@ -1,2 +1,7 @@
+[theme]
+base="dark"
+primaryColor="darkGoldrod"
+
 [server]
 fileWatcherType = "none"
+
