@@ -11,7 +11,7 @@ st.set_page_config(page_title="Leaderboards", page_icon="🌟")
 db_username = st.secrets.db_username
 db_password = st.secrets.db_password
 
-# @st.cache_resource
+@st.cache_resource
 def load_pretrained_discriminator(model_path="models/pretrained_dicriminator.pth"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
@@ -27,6 +27,7 @@ evaluator, device = load_pretrained_discriminator()
 if "evaluator" not in st.session_state:
     st.session_state.evaluator = evaluator
 
+@st.cache_data(ttl=30)
 def evaluate_all_generators(_discriminator, num_samples=100):
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
                     server_api=ServerApi('1'))

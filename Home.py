@@ -159,13 +159,15 @@ with c2:
     with cc1:
         st.number_input("ML Steps", min_value=0, max_value=200, value=100, key="num_ml_steps")
     with cc2:
-        st.button("Train", on_click=next_image, use_container_width=True)
+        st.button("Train", on_click=next_image, use_container_width=True, type="primary")
 
 st.markdown('''
-Train you own generator with YOU as the discriminator!
+Train your own generator with YOU as the discriminator!
 
 Give a model a score for every image, and watch the model learn in real time.
 Submit your model and it will be ranked! 
+
+Sorry if streamlit cloud is slow :( feel free to pull and run locally!
 ''')
 
 def on_submit_button():
@@ -194,6 +196,6 @@ ccc1, ccc2 = st.columns([1,1], vertical_alignment="bottom")
 with ccc1:
     st.text_input("Name:", key="leaderboard_name")
 with ccc2:
-    st.button("Submit to Leaderboards", on_click=on_submit_button)
-st.info("You can only submit once!")
+    st.button("Submit to Leaderboards", on_click=on_submit_button, type="primary")
+# st.info("You can only submit once!")
 
