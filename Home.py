@@ -162,9 +162,10 @@ with c2:
         st.button("Train", on_click=next_image, use_container_width=True)
 
 st.markdown('''
-Train you own generator with YOU as the discriminator! <br>
-Give a model a score for every image, and watch the model learn in real time. <br>
-After training, submit your model and it will be ranked! 
+Train you own generator with YOU as the discriminator!
+
+Give a model a score for every image, and watch the model learn in real time.
+Submit your model and it will be ranked! 
 ''')
 
 def on_submit_button():
