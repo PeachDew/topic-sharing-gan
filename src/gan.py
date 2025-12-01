@@ -8,8 +8,7 @@ class Generator(nn.Module):
     def __init__(self, latent_dim=64, img_size=28, channels=1):
         super(Generator, self).__init__()
         self.img_size = img_size
-        self.latent_dim = latent_dim
-        
+        self.latent_dim = latent_dim        
         # Calculate initial spatial size
         self.init_size = img_size // 4  # 7 for 28x28 images
         
@@ -199,15 +198,15 @@ def train_gan_step(generator, discriminator, real_images, human_feedback=None,
         fake_validity = discriminator(fake_images.detach())
         d_fake_loss = criterion(fake_validity, fake_labels)
         
-        # If we have human feedback, incorporate it
+        # incorporate human feedback
         if human_feedback is not None:
             human_z = human_feedback['latent']
-            human_score = human_feedback['score']  # 0-1, where 1 is "looks real"
+            human_score = human_feedback['score']  # 0-1, where 1 "looks realer"
             
             human_image = generator(human_z)
             human_validity = discriminator(human_image.detach())
             
-            # Human score is the "true" label for this image
+            # human score is true label
             human_label = torch.tensor([[human_score]])
             human_loss = criterion(human_validity, human_label)
             
@@ -227,7 +226,6 @@ def train_gan_step(generator, discriminator, real_images, human_feedback=None,
     z = torch.randn(batch_size, generator.latent_dim)
     fake_images = generator(z)
     
-    # Generator wants discriminator to think these are real
     fake_validity = discriminator(fake_images)
     g_loss = criterion(fake_validity, real_labels)
     

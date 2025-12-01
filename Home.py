@@ -21,6 +21,8 @@ from pymongo.server_api import ServerApi
 
 db_username = st.secrets.db_username
 db_password = st.secrets.db_password
+WARMUP_STEPS = 0
+CORRECT_IMAGES_PROB = 0.0
 
 st.set_page_config(page_title="GAN", page_icon=":woozy:", layout=None, initial_sidebar_state=None, menu_items=None)
 st.title("You are in the GAN")
@@ -40,10 +42,6 @@ if "mnist_data" not in st.session_state:
     
     indices = [i for i, label in enumerate(mnist_data.targets) if label == 5]
     st.session_state.mnist_data = torch.utils.data.Subset(mnist_data, indices)
-
-WARMUP_STEPS = 0
-CORRECT_IMAGES_PROB = 0.0
-
 if "generator" not in st.session_state:
     st.session_state.generator = Generator()
 if "discriminator" not in st.session_state:
@@ -60,7 +58,6 @@ if "d_optimizer" not in st.session_state:
         lr=0.0002, 
         betas=(0.5, 0.999)
     )
-
 if "training_steps" not in st.session_state:
     st.session_state.training_steps = 0
 if "last_losses" not in st.session_state:
@@ -73,22 +70,19 @@ st.badge(f"{int(st.session_state.training_steps)} Training Steps", width="stretc
 def train_with_ml_discriminator(num_steps=199):
     """
     Train the GAN using ML discriminator only (no human feedback).
-    This happens between human guesses.
     """
     my_bar = st.progress(0, text="Training...")
     for i in range(num_steps):
-        # Get a batch of real images
         real_batch = get_real_image_batch(st.session_state.mnist_data, batch_size=32)
         
-        # Train GAN (no human feedback)
         losses = train_gan_step(
             generator=st.session_state.generator,
             discriminator=st.session_state.discriminator,
             real_images=real_batch,
-            human_feedback=None,  # No human feedback in these steps
+            human_feedback=None,  
             g_optimizer=st.session_state.g_optimizer,
             d_optimizer=st.session_state.d_optimizer,
-            num_d_steps=1  # 2 discriminator update per generator update
+            num_d_steps=1  
         )
         
         st.session_state.last_losses = losses
@@ -101,7 +95,7 @@ if st.session_state.training_steps == 0 and "current_image" not in st.session_st
     with st.spinner("Warming up the generator..."):
         if WARMUP_STEPS > 0:
             train_with_ml_discriminator(WARMUP_STEPS)
-            # Generate first image and store its latent vector
+        # generate first image and store its latent vector
         latent = torch.randn(1, st.session_state.generator.latent_dim)
         st.session_state.current_latent = latent
         st.session_state.current_image = {
@@ -109,28 +103,24 @@ if st.session_state.training_steps == 0 and "current_image" not in st.session_st
             "fake": 1
         }
 
-
 def next_image():
     """Generate and show next image, calculate points for previous guess"""
     is_fake = st.session_state.current_image["fake"]
 
     human_score = st.session_state.slider_value / 100.0
     if is_fake == 1 and st.session_state.current_latent is not None:
-        # Get a batch of real images for this training step
         real_batch = get_real_image_batch(st.session_state.mnist_data, batch_size=32)
         
-        # Create human feedback dict
         human_feedback = {
             'latent': st.session_state.current_latent,
-            'score': human_score  # Human's assessment (0 = fake, 1 = real)
+            'score': human_score  # (0 = fake, 1 = real)
         }
         
-        # Train with human feedback
         losses = train_gan_step(
             generator=st.session_state.generator,
             discriminator=st.session_state.discriminator,
             real_images=real_batch,
-            human_feedback=human_feedback,  # Include human feedback!
+            human_feedback=human_feedback,  
             g_optimizer=st.session_state.g_optimizer,
             d_optimizer=st.session_state.d_optimizer,
             num_d_steps=1,
@@ -143,9 +133,7 @@ def next_image():
         with st.spinner(f"Training GAN with ML discriminator ({st.session_state.num_ml_steps} steps)..."):
             train_with_ml_discriminator(num_steps=st.session_state.num_ml_steps)
     
-    # 4. Generate next image
     if random.random() < CORRECT_IMAGES_PROB:
-        # Show a real image
         st.session_state.current_latent = None
         st.session_state.current_image = {
             "image": get_random_real_image(st.session_state.mnist_data), 
@@ -173,6 +161,10 @@ with c2:
     with cc2:
         st.button("Train", on_click=next_image, use_container_width=True)
 
+st.text("Train you own generator with YOU as the discriminator!")
+st.text("Give a model a score for every image, and watch the model learn in real time.")
+st.text("After training, submit your model and it will be ranked!")
+
 def on_submit_button():
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
                      server_api=ServerApi('1'))
@@ -194,14 +186,11 @@ def on_submit_button():
     st.success(f"Generator submitted! '{st.session_state.leaderboard_name}'!")
     client.close()
 
-
 st.divider()
 ccc1, ccc2 = st.columns([1,1], vertical_alignment="bottom")
 with ccc1:
     st.text_input("Name:", key="leaderboard_name")
 with ccc2:
-    # st.button("Submit Model to Leaderboards", disabled=st.session_state.submitted, on_click=on_submit_button)
     st.button("Submit to Leaderboards", on_click=on_submit_button)
-
 st.info("You can only submit once!")
 

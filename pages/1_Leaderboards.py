@@ -39,22 +39,22 @@ def evaluate_all_generators(_discriminator, num_samples=100):
         "Images": [],
         "I_Scores": []
     }
+
     for row in collection.find():
         state_dict = pickle.loads(row["model_data"])
         generator = Generator()
         generator.load_state_dict(state_dict)
         generator.eval()
         
-        # Evaluate with _discriminator
         total_score = 0.0
         fake_images = []
         image_scores = []
         with torch.no_grad():
             for _ in range(num_samples):
-                # Generate image
                 z = torch.randn(1, generator.latent_dim)
                 fake_image = generator(z)
-                score = _discriminator(fake_image).item()
+                score = _discriminator(fake_image).item() 
+                #higher score means more convinced
 
                 fake_images.append(fake_image)
                 image_scores.append(score)
@@ -78,12 +78,12 @@ with st.spinner():
     results = evaluate_all_generators(st.session_state.evaluator, 100)
     results_df = pd.DataFrame(results).sort_values(by="Score", ascending=False)
     crowned = False
-    for _, row in results_df.iterrows():
+    for i, row in results_df.iterrows():
         disp_name = row["Name"]
         if not crowned:
             disp_name += " 👑"
             crowned = True
-        with st.expander(f"[{row["Score"]*100:.5f}]  {disp_name}"):
+        with st.expander(f"{i+1} [{row["Score"]*100:.5f}]  {disp_name}"):
             cs = st.columns(NUM_IMAGES)
             for j, c in enumerate(cs):
                 with c:
