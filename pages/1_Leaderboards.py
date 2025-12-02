@@ -27,7 +27,7 @@ evaluator, device = load_pretrained_discriminator()
 if "evaluator" not in st.session_state:
     st.session_state.evaluator = evaluator
 
-@st.cache_data(ttl=30)
+# @st.cache_data(ttl=30)
 def evaluate_all_generators(_discriminator, num_samples=100):
     client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@cluster0.5lnvrry.mongodb.net/?appName=Cluster0",
                     server_api=ServerApi('1'))
